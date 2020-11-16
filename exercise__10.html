@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercise 10</title>
+    <style>
+        table, tr, td, th {
+        border: 1px solid black;
+        border-collapse: collapse;
+        }
+    </style>
+</head>
+<body>
+    <center>
+    <div>
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="login()">Login</button>
+    </div> <br><br>
+
+    <div id="container" style="display: none;">
+    <!-- INPUT DATA -->
+    <fieldset>
+        <legend> Input Data</legend>
+        <input type="text" id="inputNama" placeholder="Nama Produk">
+        <select type = "text" id="inputCategory"></select>
+        <input type="number" id="inputHarga" placeholder="Harga">
+        <input type="number" id="inputStock"> <br><br>
+        <button onclick= addToList()>Add Produk</button>
+    </fieldset>
+    <fieldset>
+        <legend>Tabel Data</legend>
+        <table>
+            <thead>
+                <tr>
+                    <td>ID</td>
+                    <td>Category</td>
+                    <td>Nama</td>
+                    <td>Harga</td>
+                    <td>Stock</td>
+                    <td colspan="3">Action</td>
+                </tr>
+            </thead>
+            <tbody id="tableContent" ></tbody>
+        </table>
+    </fieldset>
+
+    </div>
+
+    <div>
+        <h5 id="loginAs"></h5>
+    </div>
+    </center>
+</body>
+<script>
+    var categoryProducts = [
+        "All",
+        "Fruits",
+        "Electronics",
+        "Fast Food",
+        "Clothes"
+    ]
+
+    function showCategories (){
+        newArray = categoryProducts.map((val) => {
+            return (`
+            <option value ="${val}">${val}</option>
+            `)
+        })
+        document.getElementById("inputCategory").innerHTML = newArray.join("");
+    }
+
+    let loggedIn;
+
+    var users = [
+        {uName: "lian", pass: "qwe", role: "admin"},
+        {uName: "bowo", pass: "zxc", role: "user"}
+    ]
+
+    function login(){
+        var username = document.getElementById("username").value;
+        var password = document.getElementById("password").value;
+
+        loggedIn = users.find((val) => {
+            return (val.uName === username && val.pass === password)
+            });
+            if (loggedIn) {
+                document.getElementById("container").style.display = "inline";
+                showList(); showCategories();                
+                return (document.getElementById("loginAs")).innerHTML = 
+                `@${loggedIn.uName} Login sebagai ${loggedIn.role}`
+            }
+            else {
+                document.getElementById("container").style.display = "none";
+                return (document.getElementById("loginAs")).innerHTML = 
+                `Login Gagal`
+            }
+        
+    }
+
+    class Products {
+        constructor (id, category, nama, harga, stock) {
+            this.id = id,
+            this.category = category,
+            this.nama = nama,
+            this.harga = harga,
+            this.stock = stock
+        }
+    }
+
+    let data = [
+        new Products("1605421024643", "Fruits", "Orange", "20000", "20"),
+        new Products("1605445024643", "Electronics", "Nokia 103", "200000", "10"),
+        new Products("1605456024643", "Noodles", "Indomie", "2200", "200"),
+        new Products("1605478024643", "Clothes", "Hoodie", "300000", "10")
+    ]
+    
+    function addToList(){
+        var id = new Date().getTime();
+        var category = document.getElementById("inputCategory").value;
+        var nama = document.getElementById("inputNama").value;
+        var harga = document.getElementById("inputHarga").value;
+        var stock = document.getElementById("inputStock").value;
+
+        data.push ({
+            id, category, nama, harga, stock
+        })
+        showList(data);        
+    }
+
+    function showList() {
+        let newArray;
+        newArray = data.map((val) => {
+            return (
+                `
+                <tr>
+                    <td>${val.id}</td>
+                    <td>${val.category}</td>
+                    <td>${val.nama}</td>
+                    <td>${val.harga}</td>
+                    <td>${val.stock}</td>
+                    ${loggedIn.role === "admin" ? 
+                    '<td><button>Edit</button></td> <td><button>Delete</button></td>': "<td></td>"}
+                </tr>
+                `
+            )
+        });
+        if (loggedIn.role === "admin"){
+            return document.getElementById("tableContent").innerHTML = newArray.join("");
+        }
+        else {
+            return document.getElementById("tableContent").innerHTML = newArray.join("");
+        }
+    }
+
+ showList();
+ showCategories();
+    
+</script>
+</html>
